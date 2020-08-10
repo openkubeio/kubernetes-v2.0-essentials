@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: traefik
+    chart: traefik-1.86.1
+    release: ssl-traefik
+  name: ssl-traefik
+  namespace: traefik
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: traefik
+      chart: traefik-1.86.1
+      release: ssl-traefik
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: traefik
+        chart: traefik-1.86.1
+        release: ssl-traefik
+    spec:
+      containers:
+      - args:
+        - --configfile=/config/traefik.toml
+        image: ${app_image}   
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: ssl-traefik
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 8880
+          name: httpn
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 8080
+          name: dash
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /ssl
+          name: ssl
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: node-role.kubernetes.io/proxy
+#                operator: In
+#                values:
+#                - proxy
+      serviceAccount: ssl-traefik
+      serviceAccountName: ssl-traefik
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 420
+          name: ssl-traefik     
+      - name: ssl
+        secret:
+          defaultMode: 420
+          secretName: ssl-traefik.secret.tls
