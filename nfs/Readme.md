@@ -10,14 +10,16 @@ export NFS_SERVER=$(kubectl get nodes -n kube-system -o=custom-columns=:.status.
  
 #### Create Nfs Provisioner 
 ```
-kubectl apply -f nfs-rbac.yaml
-kubectl apply -f nfs-storage-class.yaml
-envsubst < nfs-provisioner.yaml | kubectl apply -f -  
+kubectl apply -f https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-storage-class.yaml
+
+curl -LO https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-provisioner.yaml
+envsubst < nfs/nfs-provisioner.yaml | kubectl apply -f -  
 ```
 
 #### Quick test nfs persistence provisioning
 ```
-kubectl apply -f nfs-pvc-test.yaml
+kubectl apply -f https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-pvc-test.yaml
 kubectl get pv
 kubectl get pvc 
 ```
