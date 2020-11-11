@@ -5,7 +5,7 @@ kubectl get nodes -n kube-system -o=custom-columns=NAME:.metadata.name,ADDRESS:.
 
 #### Export master node IP address
 ```
-export NFS_SERVER=$(kubectl get nodes -n kube-system -o=custom-columns=:.status.addresses[0].address -l node-role.kubernetes.io/master | cut -d, -f1)
+export NFS_SERVER=$(kubectl get nodes -n kube-system -o=custom-columns=IP:.status.addresses[0].address -l node-role.kubernetes.io/master | grep -v IP)
 ``` 
  
 #### Create Nfs Provisioner 
