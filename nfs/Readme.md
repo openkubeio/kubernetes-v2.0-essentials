@@ -14,7 +14,7 @@ kubectl apply -f https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-es
 kubectl apply -f https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-storage-class.yaml
 
 curl -LO https://raw.githubusercontent.com/openkubeio/kubernetes-v2.0-essentials/master/nfs/nfs-provisioner.yaml
-envsubst < nfs/nfs-provisioner.yaml | kubectl apply -f -  
+envsubst < nfs-provisioner.yaml | kubectl apply -f -  
 ```
 
 #### Quick test nfs persistence provisioning
