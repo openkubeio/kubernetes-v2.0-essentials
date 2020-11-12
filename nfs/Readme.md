@@ -3,7 +3,7 @@
 kubectl get nodes -n kube-system -o=custom-columns=NAME:.metadata.name,ADDRESS:.status.addresses[*].address -l node-role.kubernetes.io/master
 ```
 
-#### Export master node IP address
+#### Export NFS node IP address
 ```
 export NFS_SERVER=$(kubectl get nodes -n kube-system -o=custom-columns=IP:.status.addresses[0].address -l node-role.kubernetes.io/master | grep -v IP)
 ``` 
