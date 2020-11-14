@@ -1,11 +1,13 @@
 # Crete dir certs if not exists
 mkdir -p certs
 
+# verify args
+
 # export common variables 
 CommonName=openkube.io
 
-# verify args
-if [[ $# -lt 1 ]] ; then echo -en  "\n$0 help\n" ; exit 1 ; fi
+# export functional variables
+export SubjectName
 
 generateCA(){
 
@@ -18,8 +20,7 @@ openssl req -x509 -new -nodes -key certs/rootCA.key -sha256 -days 1024 -out cert
 
 generateCert(){
 
-# export functional variables
-SubjectName=$2
+echo "Generating cert for ${SubjectName}.${CommonName}"
 
 # Create the certificate key
 openssl genrsa -out certs/${SubjectName}.${CommonName}.key 2048
@@ -54,6 +55,7 @@ case $1 in
       generateCA
       ;;
    generateCert)
+      SubjectName="$2"
       generateCert
       ;;
    verifyCert)
